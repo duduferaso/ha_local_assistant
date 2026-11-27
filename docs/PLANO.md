@@ -64,7 +64,7 @@ Regras para não fazer o trabalho duas vezes:
 4. **Cada peça modular nova ganha a exportação no app atual antes de ser testada.** Se o M3 muda algo na planta, sai uma 1.16.x que exporta o campo novo.
 5. **Mesmo microfone:** como os dois apps rodam no Redmi, os exemplos de voz importados funcionam no app novo como funcionam hoje.
 
-**Dois apps no mesmo Redmi.** O Android deixa um só app ouvir o microfone por vez, e hoje o repouso continua segurando o microfone, lendo e apagando os avisos do HA e tocando timers. Por isso os dois apps ganham uma **pausa total** (a 1.16.0 no atual, a primeira alfa no novo):
+**Dois apps no mesmo Redmi.** O Android deixa um só app ouvir o microfone por vez. O repouso de hoje já solta o microfone, mas continua lendo e apagando os avisos do HA, falando lembretes, tocando timers e iniciando com o celular. Por isso os dois apps ganham uma **pausa total** (a 1.16.0 no atual, já publicada; a primeira alfa no novo). Contrato entre os dois em [`pacote-configuracao.md`](pacote-configuracao.md#convivência-no-mesmo-celular):
 
 - solta o microfone de verdade;
 - para de ler e apagar `input_text.jarvis_aviso`;
