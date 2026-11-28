@@ -1,0 +1,16 @@
+name: Ideia
+description: Uma função nova ou melhoria
+labels: [ideia]
+body:
+  - type: textarea
+    id: oque
+    attributes:
+      label: O que você gostaria que o Home Control fizesse?
+      placeholder: Quando eu disser "boa noite", apagar todas as luzes e…
+    validations:
+      required: true
+  - type: textarea
+    id: ha
+    attributes:
+      label: O que isso usa no Home Assistant?
+      description: Entidades ou integrações envolvidas (ex.: media_player, Android TV Remote).

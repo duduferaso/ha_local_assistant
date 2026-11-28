@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Agenda por voz, luzes, clima, alertas e avisos contra o HA simulado (código real do app, na JVM).
+# Requer: kotlinc (KOTLINC=...), java, python3 com aiohttp.
+set -e
+cd "$(dirname "$0")"
+KOTLINC="${KOTLINC:-kotlinc}"
+KHOME="$(cd "$(dirname "$(readlink -f "$(command -v "$KOTLINC")")")/.." && pwd)"
+A=../android/app/src/main/java/io/github/duduferaso/halocalassistant
+T=$(mktemp -d)
+sed '/^object Backends/,$d; /import io.github.duduferaso.halocalassistant.settings.Prefs/d; /import io.github.duduferaso.halocalassistant.wakeword/d' $A/network/Backend.kt > $T/Backend.kt
+cp $A/network/HaDirectBackend.kt $A/network/MiniWebSocket.kt $A/network/TextCorrector.kt $A/network/CommandMatcher.kt $A/commands/LightCommands.kt $A/commands/Timers.kt $A/commands/Workout.kt $A/commands/Learning.kt $A/commands/Lists.kt $A/calendar/CalendarParser.kt $A/calendar/CalendarAssistant.kt $A/calendar/CalendarModel.kt $A/domain/AssistantState.kt \
+   $A/calendar/*.kt $A/home/HomeApi.kt $A/home/HomeParser.kt $A/home/FloorPlan.kt $A/home/Planta.kt $A/home/Forecast.kt jvm/OrgJson.kt jvm/JLogStub.kt jvm_casa/CasaTest.kt $T/
+"$KOTLINC" $T/*.kt -d $T/test.jar 2>&1 | grep error || true
+python3 mock_ha.py > $T/mock.log 2>&1 & M=$!
+trap 'kill $M 2>/dev/null; rm -rf $T' EXIT
+sleep 1.5
+java -Duser.timezone=America/Sao_Paulo -Dstdout.encoding=UTF-8 -cp "$T/test.jar:$KHOME/lib/kotlin-stdlib.jar" CasaTestKt

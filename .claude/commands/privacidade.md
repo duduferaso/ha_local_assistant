@@ -1,0 +1,1 @@
+Rode `tools/dev.sh privacidade`. Se encontrar algo, tire o dado (endereço da rede, token, e-mail, nome de pessoa, voz, planta de uma casa) e troque por um exemplo genérico. Nunca comite `.jks`, `provision.json`, `.env`, `.tpl` ou pacotes de configuração.

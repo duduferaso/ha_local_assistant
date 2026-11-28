@@ -1,0 +1,81 @@
+import io.github.duduferaso.halocalassistant.commands.LightCommands
+import io.github.duduferaso.halocalassistant.commands.LightCommands.Light
+import io.github.duduferaso.halocalassistant.home.FloorPlan
+
+// Voz usa os mesmos relés da planta: "quarto de visita" aciona o que foi escolhido no Quarto 2.
+fun main() {
+    PlantaTeste.carregar()
+    var fl = 0
+    fun ok(c: Boolean, m: String) { if (!c) fl++; println((if (c) "PASSOU " else "FALHOU ") + m) }
+    val relays = listOf(
+        FloorPlan.Relay("light.luz_do_quarto", "Luz do Quarto", false, true),
+        FloorPlan.Relay("switch.sonoff_3", "Interruptor 3", false, true),       // nome sem "visita"
+        FloorPlan.Relay("light.luz_da_sala", "Luz da Sala", false, true),
+        FloorPlan.Relay("switch.sonoff_jantar", "Sonoff 5", false, true),
+        FloorPlan.Relay("light.luz_da_cozinha", "Luz da Cozinha", false, true),
+        FloorPlan.Relay("switch.servico", "Luz Serviço", false, true))
+    // escolhas feitas na planta (toque longo)
+    val saved = mapOf("quarto2" to listOf("switch.sonoff_3"), "quarto1" to listOf("light.luz_do_quarto"),
+        "estar" to listOf("light.luz_da_sala"), "jantar" to listOf("switch.sonoff_jantar"),
+        "cozinha" to listOf("light.luz_da_cozinha", "switch.servico"))
+    val map = FloorPlan.mapping(saved, relays)
+    val rooms = FloorPlan.zones.mapNotNull { z ->
+        val ls = relays.filter { it.entityId in map[z.id].orEmpty() }.map { Light(it.entityId, it.name) }
+        if (ls.isEmpty()) null else LightCommands.Room(z.id, FloorPlan.spokenNames(z.id), ls)
+    }
+    val lights = LightCommands.lightsFrom(org.json.JSONArray(relays.joinToString(",", "[", "]") {
+        """{"entity_id":"${it.entityId}","state":"off","attributes":{"friendly_name":"${it.name}"}}""" }))
+    fun r(s: String) = LightCommands.resolve(s, lights, emptyList(), rooms)
+    fun d(s: String) = r(s)?.let { (if (it.on) "on:" else "off:") + it.lights.joinToString(",") { l -> l.entityId } }
+    val cases = listOf(
+        "liga a luz do quarto de visita" to "on:switch.sonoff_3",
+        "desliga o quarto de visitas" to "off:switch.sonoff_3",
+        "acende a luz do quarto das visitas" to "on:switch.sonoff_3",
+        "liga a luz do quatro de visita" to "on:switch.sonoff_3",
+        "desliga a luz do quarto 2" to "off:switch.sonoff_3",
+        "liga o quarto dois" to "on:switch.sonoff_3",
+        "desliga a luz do quarto de hóspedes" to "off:switch.sonoff_3",
+        "liga a luz da visita" to "on:switch.sonoff_3",
+        "liga a luz do quarto" to "on:light.luz_do_quarto",          // nome do Home Assistant continua valendo
+        "desliga o quarto de casal" to "off:light.luz_do_quarto",
+        "liga a luz do quarto 1" to "on:light.luz_do_quarto",
+        "liga a luz da sala de jantar" to "on:switch.sonoff_jantar",
+        "desliga a luz do jantar" to "off:switch.sonoff_jantar",
+        "liga a luz da sala" to "on:light.luz_da_sala",
+        "desliga a luz da cozinha" to "off:light.luz_da_cozinha",    // o nome exato vence a planta
+        "liga a área de serviço" to "on:light.luz_da_cozinha,switch.servico",
+        "desliga o quarto de visita e a sala" to "off:switch.sonoff_3,light.luz_da_sala")
+    for ((s, want) in cases) ok(d(s) == want, "\"$s\" → ${d(s)}")
+    ok(r("liga a luz do quarto de visita")?.let { LightCommands.speech(it) } == "Luz do quarto de visita ligada.", "resposta: ${r("liga a luz do quarto de visita")?.let { LightCommands.speech(it) }}")
+    ok(r("desliga a luz do quarto 2")?.let { LightCommands.speech(it) } == "Luz do quarto 2 desligada.", "resposta: ${r("desliga a luz do quarto 2")?.let { LightCommands.speech(it) }}")
+    ok(r("luz da sala em 50%") == null, "porcentagem continua com o Home Assistant")
+    // só o nome da luz: inverte o estado (como um interruptor)
+    for ((s, want) in listOf("luz da cozinha" to listOf("light.luz_da_cozinha"), "a luz do quarto" to listOf("light.luz_do_quarto"),
+            "luz do quarto de visita" to listOf("switch.sonoff_3"), "Luz da sala." to listOf("light.luz_da_sala"))) {
+        val x = r(s)
+        ok(x != null && x.invert && x.lights.map { it.entityId }.sorted() == want.sorted(), "só o nome \"$s\" inverte ${x?.lights?.map { it.entityId }}")
+    }
+    for (s in listOf("a luz da cozinha está acesa?", "qual a luz da cozinha", "cozinha", "luz", "luzes", "a luz da cozinha queimou", "todas as luzes"))
+        ok(r(s)?.invert != true, "não inverte: \"$s\" → ${r(s)?.let { (if (it.on) "on " else "off ") + it.lights.map { l -> l.entityId } }}")
+    println(if (fl == 0) "TODOS OS TESTES PASSARAM" else "$fl FALHA(S)")
+    treinoRelevante()
+}
+
+// treino de comandos: tudo o que foi gravado vale como foi gravado (quem decide apagar é a pessoa)
+fun treinoRelevante() {
+    var fl = 0
+    fun ok(c: Boolean, m: String) { if (!c) fl++; println((if (c) "PASSOU " else "FALHOU ") + m) }
+    val L = listOf(Light("light.luz_da_cozinha", "Luz da Cozinha"), Light("light.luz_da_visita", "Luz da Visita"))
+    val tr = listOf(LightCommands.Trained("Olha só, da cozinha", true, "light.luz_da_cozinha"))
+    val a = LightCommands.resolve("Olha só, da cozinha.", L, tr)
+    ok(a != null && a.lights.map { it.entityId } == listOf("light.luz_da_cozinha"), "\"Olha só, da cozinha\" (longe, com TV) aciona a cozinha")
+    ok(a != null && a.invert, "sem \"liga\"/\"desliga\" na frase: inverte o estado atual em vez de seguir o treino")
+    val tr2 = tr + LightCommands.Trained("lisa luz da cozinha", true, "light.luz_da_cozinha")
+    val b = LightCommands.resolve("Liga a luz da cozinha", L, tr2)
+    ok(b != null && b.on && !b.invert, "com verbo: segue a frase (liga)")
+    val c = LightCommands.resolve("Desliga a luz da cozinha", L, tr2)
+    ok(c != null && !c.on && !c.invert, "com verbo: segue a frase (desliga)")
+    ok(a!!.withOn(false).let { !it.on && !it.invert }, "inverter: decide desligar quando estava acesa")
+    ok(!LightCommands.hasVerb("Olha só, da cozinha") && LightCommands.hasVerb("apaga a cozinha") && LightCommands.hasVerb("deliga a sala"), "detecta o verbo, inclusive mal escrito")
+    println(if (fl == 0) "TODOS OS TESTES PASSARAM (treino)" else "$fl FALHA(S) (treino)")
+}

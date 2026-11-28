@@ -1,0 +1,21 @@
+Home Control (ha_local_assistant)
+Copyright 2026 duduferaso e colaboradores
+
+Licenciado sob a Apache License, versão 2.0 (veja LICENSE).
+
+Este produto inclui software de terceiros:
+
+- sherpa-onnx (k2-fsa) — Apache License 2.0
+  https://github.com/k2-fsa/sherpa-onnx
+  android/app/libs/sherpa-onnx-static-link-onnxruntime-1.12.9.aar e
+  android/app/src/main/jniLibs/arm64-v8a/libsherpa-onnx-jni.so
+
+- ONNX Runtime (Microsoft), incluído estaticamente no sherpa-onnx — MIT License
+  https://github.com/microsoft/onnxruntime
+
+- Silero VAD (Silero Team) — MIT License
+  https://github.com/snakers4/silero-vad
+  android/app/src/main/assets/personal/silero_vad.onnx
+
+- Biblioteca padrão do Kotlin (JetBrains) — Apache License 2.0
+  https://github.com/JetBrains/kotlin
