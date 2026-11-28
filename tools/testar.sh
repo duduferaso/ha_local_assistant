@@ -33,6 +33,10 @@ conta() {  # $1 = nome, $2 = saída
   fi
 }
 
+echo "== textos visíveis"
+if tools/checar_textos.sh >/dev/null; then echo "✓ nenhum nome antigo à vista"; PASSOU=$((PASSOU + 1))
+else tools/checar_textos.sh | tail -5; SUITES_RUINS+=("textos (nome antigo)"); FALHAS=$((FALHAS + 1)); fi
+
 echo "== unitários"
 for d in comandos timers treino listas tempo aprendizado corretor planta vad agenda pacote; do
   if ! "$KOTLINC" $COMMON tests/jvm_$d/*.kt -include-runtime -d "$OUT/$d.jar" 2>"$OUT/$d.err"; then

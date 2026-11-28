@@ -2,7 +2,7 @@
 
 Vale para pessoas e para IAs (Claude Code, Codex, Gemini CLI, Copilot, Cursor…). Leia antes de mudar o código.
 
-O **Home Control** (repositório `ha_local_assistant`) é um assistente de voz em português para o Home Assistant, rodando num celular Android fixo na parede. Ele fala **direto com o Home Assistant** da casa, sem servidor próprio no meio. O plano do projeto está em [`docs/PLANO.md`](docs/PLANO.md); o formato do pacote de configuração e da planta, em [`docs/pacote-configuracao.md`](docs/pacote-configuracao.md).
+O **Home Control** (repositório `ha_local_assistant`) é um assistente de voz em português para o Home Assistant, rodando num celular Android fixo na parede. Ele fala **direto com o Home Assistant** da casa, sem servidor próprio no meio. O plano do projeto está em [`docs/PLANO.md`](docs/PLANO.md); o formato do pacote de configuração e da planta, em [`docs/pacote-configuracao.md`](docs/pacote-configuracao.md). **Os erros da primeira versão e o que impede que voltem estão em [`docs/LICOES.md`](docs/LICOES.md): leia antes de mexer em voz, limiar, reforço ou alarme.**
 
 > Estado: **2.0.0 em construção** (marco M1 do plano). O app veio do Jarvis Home 1.16 e ainda carrega nomes antigos em classes (`JarvisForegroundService`, `JarvisApi`) e no nome das preferências (`"jarvis"`). Trocar esses nomes é tarefa à parte; não misture com outra mudança.
 
@@ -99,3 +99,5 @@ Todo teste imprime `PASSOU`/`FALHOU` e termina com `TODOS OS TESTES PASSARAM`.
 - **Fluxo:** branch → PR → CI verde → revisão do mantenedor. Ninguém faz push direto na `main`.
 - **IA:** opcional. Diga no PR que usou; quem abre o PR responde pelo código. Chaves de IA ficam na sua máquina, nunca no repositório.
 - **Commits** em português, explicando o porquê.
+- **Todo bug corrigido ganha um teste** que falharia sem a correção (veja `docs/LICOES.md`). Uma mudança por PR.
+- **Não afirme como o código funciona sem conferir:** cite o arquivo e a linha.

@@ -10,11 +10,12 @@ permissions:
 
 jobs:
   privacidade:
-    name: Privacidade
+    name: Privacidade e textos
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - run: tools/checar_privacidade.sh
+      - run: tools/checar_textos.sh
 
   testes:
     name: Testes (JVM)
