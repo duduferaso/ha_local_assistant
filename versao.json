@@ -1,0 +1,8 @@
+{
+  "versionCode": 2,
+  "versionName": "2.0.0-alfa.2",
+  "notes": "Título da tela agora é Home Control. O limiar do treino de voz nunca fica acima da TV, mesmo quando ela é muito parecida com a chamada. Textos de configuração sem o nome antigo.",
+  "apk": "HomeControl-2.0.0-alfa.2-2.apk",
+  "size": 9315416,
+  "sha256": "bb259ed6d3e00cad496000a3e9283ccadc98dd1527a863c732865f99fcc06407"
+}
