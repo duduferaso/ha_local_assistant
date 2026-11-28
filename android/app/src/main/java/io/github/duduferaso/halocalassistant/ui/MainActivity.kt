@@ -131,7 +131,7 @@ class MainActivity : Activity(), StateBus.Listener, HomeModel.Listener {
         }
         val row1 = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
         titleView = text(13f, dim).apply {
-            text = "JARVIS HOME"
+            text = "HOME CONTROL"
             letterSpacing = 0.32f
             typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
         }

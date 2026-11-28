@@ -271,7 +271,7 @@ class SettingsActivity : Activity() {
                     lists.isEmpty() -> AlertDialog.Builder(this).setTitle("Nenhuma lista")
                         .setMessage("O Home Assistant não tem listas. Em Configurações → Dispositivos e serviços, adicione " +
                             "“Lista de compras” (Shopping list) ou “Tarefas locais” (Local To-do). Se já existem, " +
-                            "confira se o usuário jarvis consegue vê-las.")
+                            "confira se o usuário do app no Home Assistant consegue vê-las.")
                         .setPositiveButton("OK", null).show()
                     else -> {
                         val names = listOf("Escolher sozinho (pelo nome)") + lists.map { it.name + "  (" + it.entityId + ")" }
@@ -387,7 +387,7 @@ class SettingsActivity : Activity() {
         tokenField = field("Token", "",
             if (hasToken) "•••••• salvo (deixe vazio para manter)" else "cole o token de longa duração",
             InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
-        note("Modo direto: token de longa duração do usuário “jarvis” do Home Assistant (Perfil > Segurança). " +
+        note("Token de longa duração de um usuário do Home Assistant só para este app (Perfil > Segurança). " +
             "Use um usuário SEM administrador. O token fica cifrado no Keystore do Android.")
         pipelineField = field("Pipeline (opcional)", prefs.pipelineId, "vazio = assistente preferido do HA",
             InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS)
@@ -642,6 +642,7 @@ class SettingsActivity : Activity() {
                 .setNegativeButton("Cancelar", null).show()
         }
 
+        if (packageManager.getLaunchIntentForPackage(JarvisForegroundService.OTHER_PACKAGE) != null || prefs.pausedForOther) {
         section("Jarvis Home (app antigo)")
         note("Durante a transição, o Jarvis Home e o Home Control podem ficar instalados no mesmo celular, um ativo por vez: " +
             "o que fica em pausa total solta o microfone, não lê os avisos do Home Assistant, não toca timers e não inicia sozinho.")
@@ -658,6 +659,7 @@ class SettingsActivity : Activity() {
         }
         note(if (prefs.pausedForOther) "Agora: em pausa total. Para voltar, toque e segure no rosto na tela principal."
             else "Agora: este app está ativo.")
+        }
 
         section("Diagnóstico")
         diag = note("")
