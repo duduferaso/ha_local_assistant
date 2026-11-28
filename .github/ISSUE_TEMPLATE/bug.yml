@@ -1,0 +1,34 @@
+name: Problema
+description: Algo não funcionou como deveria
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por avisar! **Nunca cole o token do Home Assistant** nem endereços da sua rede aqui.
+        Ajuda muito mandar os "Últimos comandos" (Engrenagem → Sistema). Em breve: Modo desenvolvedor → Exportar diagnóstico.
+  - type: input
+    id: versao
+    attributes:
+      label: Versão do Home Control
+      description: Engrenagem → Sistema (ex.: 2.0.0-alfa.1)
+    validations:
+      required: true
+  - type: textarea
+    id: oque
+    attributes:
+      label: O que aconteceu e o que você esperava
+      placeholder: Falei "liga a luz da cozinha" e ele respondeu…
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Últimos comandos e linhas do log
+      description: Engrenagem → Sistema → Últimos comandos. Para chamadas que falham ou ativam sozinhas, as linhas "Chamada: distância …".
+      render: text
+  - type: input
+    id: aparelho
+    attributes:
+      label: Celular e Android
+      placeholder: Xiaomi Redmi 10, Android 11

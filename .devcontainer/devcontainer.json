@@ -1,0 +1,10 @@
+{
+  "name": "Home Control",
+  "image": "mcr.microsoft.com/devcontainers/java:1-21-bookworm",
+  "postCreateCommand": "sudo apt-get update -q && sudo apt-get install -y -q aapt dalvik-exchange zipalign apksigner python3-aiohttp unzip zip && tools/dev.sh preparar && tools/checar_privacidade.sh --instalar",
+  "customizations": {
+    "vscode": {
+      "extensions": ["fwcd.kotlin"]
+    }
+  }
+}

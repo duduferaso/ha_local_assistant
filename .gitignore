@@ -1,0 +1,19 @@
+# compilação e ferramentas baixadas
+android/build/
+.ferramentas/
+*.apk
+__pycache__/
+
+# segredos: nunca no Git
+*.jks
+*.keystore
+*.p12
+*.senha
+provision.json
+.env
+
+# dados de uma casa (voz, planta, pacotes) e palavras privadas da checagem
+*.tpl
+home-control-pacote*.json
+.privacidade-local
+dados-voz/

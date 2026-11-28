@@ -1,0 +1,26 @@
+{
+ "formato": 1,
+ "nome": "Casa de exemplo",
+ "andares": [
+  {
+   "id": "terreo",
+   "nome": "Térreo",
+   "comodos": [
+    {"id": "sala", "nome": "Sala", "tipo": "sala", "partes": [[0, 0, 5, 4]], "luzes": [[2.5, 2]],
+     "entidades": [], "nomesFalados": ["sala", "sala de estar"], "mostrarNome": true},
+    {"id": "cozinha", "nome": "Cozinha", "tipo": "cozinha", "partes": [[5, 0, 8, 3]], "luzes": [[6.5, 1.5]],
+     "entidades": [], "nomesFalados": ["cozinha"], "mostrarNome": true},
+    {"id": "corredor", "nome": "Corredor", "tipo": "corredor", "partes": [[5, 3, 6, 8]], "luzes": [[5.5, 5.5]],
+     "entidades": [], "nomesFalados": ["corredor"], "mostrarNome": false},
+    {"id": "banheiro", "nome": "Banheiro", "tipo": "banheiro", "partes": [[6, 3, 8, 5]], "luzes": [[7, 4]],
+     "entidades": [], "nomesFalados": ["banheiro"], "mostrarNome": true},
+    {"id": "quarto", "nome": "Quarto", "tipo": "quarto", "partes": [[0, 4, 5, 8]], "luzes": [[2.5, 6]],
+     "entidades": [], "nomesFalados": ["quarto", "quarto de casal"], "mostrarNome": true},
+    {"id": "escritorio", "nome": "Escritório", "tipo": "escritorio", "partes": [[6, 5, 8, 8]], "luzes": [[7, 6.5]],
+     "entidades": [], "nomesFalados": ["escritório"], "mostrarNome": true}
+   ],
+   "integrados": [["sala", "cozinha"], ["sala", "corredor"]],
+   "portas": [[1, 0, 2, 0], [6, 3.5, 6, 4.3], [6, 6, 6, 6.8], [5, 4.5, 5, 5.3], [5, 3, 5.5, 3]]
+  }
+ ]
+}

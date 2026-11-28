@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  privacidade:
+    name: Privacidade
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: tools/checar_privacidade.sh
+
+  testes:
+    name: Testes (JVM)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Ferramentas do sistema
+        run: sudo apt-get update -q && sudo apt-get install -y -q python3-aiohttp unzip zip
+      - uses: actions/cache@v4
+        with:
+          path: .ferramentas
+          key: ferramentas-kotlin-1.9.25-android-33
+      - run: tools/dev.sh preparar
+      - run: tools/dev.sh testar
+
+  compilar:
+    name: Compilar o APK de teste
+    runs-on: ubuntu-24.04
+    needs: [privacidade]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Ferramentas do sistema
+        run: sudo apt-get update -q && sudo apt-get install -y -q aapt dalvik-exchange zipalign apksigner unzip zip
+      - uses: actions/cache@v4
+        with:
+          path: .ferramentas
+          key: ferramentas-kotlin-1.9.25-android-33
+      - run: tools/dev.sh preparar
+      - run: VERSION_NAME=0.0.0-ci.${{ github.run_number }} VERSION_CODE=1 tools/dev.sh compilar
+      - uses: actions/upload-artifact@v4
+        with:
+          name: HomeControl-teste
+          path: android/build/HomeControl-*-teste.apk
+          retention-days: 14
