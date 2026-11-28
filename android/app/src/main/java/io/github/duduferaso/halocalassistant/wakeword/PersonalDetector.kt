@@ -302,6 +302,8 @@ object PersonalTrainer {
     const val MARGIN = 0.03f
     /** Limiar máximo escolhido automaticamente (nas gravações da casa a fala/TV mais parecida fica em ~0,22–0,25). */
     const val MAX_AUTO = 0.20f
+    /** Piso absoluto: abaixo disso nem chamadas boas passam; a tela pede para gravar de novo. */
+    const val MIN_AUTO = 0.08f
 
     class Report(val threshold: Float, val recognized: Int, val total: Int, val falseHits: Int, val worstPositive: Float, val bestNegative: Float)
 
@@ -314,8 +316,11 @@ object PersonalTrainer {
         val bestNeg = neg.minOrNull() ?: 1f
         // Folga de 0,03 abaixo da fala/TV mais parecida e no máximo 0,20. Antes: meio-termo até 0,26 ou
         // 0,01 abaixo da TV — treinando longe com TV o limiar ia a ~0,22 e passou a ativar sozinho.
+        // A folga vale mesmo abaixo de 0,14: com a TV parecida demais, o piso antigo de 0,14 punha o limiar
+        // ACIMA da TV (o app ativaria com ela). Piso absoluto de 0,08; a tela de treino avisa nesse caso.
         val safe = bestNeg - MARGIN
-        val thr = (if (worstPos < safe) minOf((worstPos + bestNeg) / 2f, safe) else safe).coerceIn(0.14f, MAX_AUTO)
+        val raw = if (worstPos < safe) minOf((worstPos + bestNeg) / 2f, safe) else safe
+        val thr = minOf(maxOf(raw, 0.14f), MAX_AUTO, safe).coerceAtLeast(MIN_AUTO)
         return Report(thr, pos.count { it <= thr }, pos.size, neg.count { it <= thr }, worstPos, bestNeg)
     }
 }
